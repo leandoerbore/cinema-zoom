@@ -1,0 +1,102 @@
+.grid-container{
+  position: absolute;
+  bottom: -200px;
+  display: grid;
+  grid-template-areas:
+          'upper upper upper'
+          'menu middle main';
+  grid-template-columns: 2fr 1fr 6fr;
+  overflow-x: hidden;
+
+  &__upper-reel{
+    grid-area: upper;
+    overflow: hidden;
+
+  }
+  &__menu{
+    grid-area: menu;
+
+  }
+  &__middle-reel{
+    grid-area: middle;
+    overflow: hidden;
+
+  }
+  &__main{
+    grid-area: main;
+  }
+}
+
+.menu{
+  background-color: #BB0A21;
+  position: sticky;
+  margin: 50px auto;
+
+  border-radius: 10px;
+  width: 75%;
+  height: 506px;
+
+  &-wrapper{
+  }
+
+  &__filter{
+    box-sizing: border-box;
+    padding: 20px;
+
+    &-select{
+      width: 100%;
+      text-align: center;
+      background-color: #313638;
+      font-size: 20px;
+      color: #FFFFFF;
+      text-decoration: none;
+      border-radius: 0 6px 6px 6px;
+      box-sizing: border-box;
+      padding: 8px 0;
+      outline: none;
+      border: 0;
+    }
+
+    &-text{
+      font-size: 20px;
+      color: #FFFFFF;
+      background-color: #313638;
+      width: fit-content;
+      box-sizing: border-box;
+      padding: 10px 10px 0 10px;
+      border-radius: 6px 6px 0 0;
+
+      &__span{
+        border-bottom: 1px solid;
+      }
+    }
+
+    &-wrapper{
+      padding-bottom: 25px;
+    }
+
+    &-button{
+      font-size: 25px;
+      color: #BB3638;
+      background-color: #FFFFFF;
+      outline: none;
+      border: 0;
+      padding: 10px 0;
+      margin: auto;
+      width: fit-content;
+      letter-spacing: 1px;
+    }
+    &-button-wrapper{
+      text-align: center;
+      background-color: #FFFFFF;
+      width: 80%;
+      margin: auto;
+      border-radius: 15px;
+      cursor: pointer;
+    }
+
+    &-item{
+
+    }
+  }
+}

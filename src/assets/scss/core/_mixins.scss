@@ -1,0 +1,5 @@
+@use 'sass:math';
+
+@function vw($PXSize, $windowSize: 1280) {
+  @return math.div($PXSize * 100vw, $windowSize)
+}
