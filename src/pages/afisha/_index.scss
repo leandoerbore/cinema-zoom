@@ -1,34 +1,31 @@
-.grid-container{
+.grid-container {
   position: absolute;
   bottom: -200px;
   display: grid;
   grid-template-areas:
-          'upper upper upper'
-          'menu middle main';
+    "upper upper upper"
+    "menu middle main";
   grid-template-columns: 2fr 1fr 6fr;
   overflow-x: hidden;
 
-  &__upper-reel{
+  &__upper-reel {
     grid-area: upper;
     overflow: hidden;
-
   }
-  &__menu{
+  &__menu {
     grid-area: menu;
-
   }
-  &__middle-reel{
+  &__middle-reel {
     grid-area: middle;
     overflow: hidden;
-
   }
-  &__main{
+  &__main {
     grid-area: main;
   }
 }
 
-.menu{
-  background-color: #BB0A21;
+.menu {
+  background-color: #bb0a21;
   position: sticky;
   margin: 50px auto;
 
@@ -36,19 +33,16 @@
   width: 75%;
   height: 506px;
 
-  &-wrapper{
-  }
-
-  &__filter{
+  &__filter {
     box-sizing: border-box;
     padding: 20px;
 
-    &-select{
+    &-select {
       width: 100%;
       text-align: center;
       background-color: #313638;
       font-size: 20px;
-      color: #FFFFFF;
+      color: #ffffff;
       text-decoration: none;
       border-radius: 0 6px 6px 6px;
       box-sizing: border-box;
@@ -57,28 +51,28 @@
       border: 0;
     }
 
-    &-text{
+    &-text {
       font-size: 20px;
-      color: #FFFFFF;
+      color: #ffffff;
       background-color: #313638;
       width: fit-content;
       box-sizing: border-box;
       padding: 10px 10px 0 10px;
       border-radius: 6px 6px 0 0;
 
-      &__span{
+      &__span {
         border-bottom: 1px solid;
       }
     }
 
-    &-wrapper{
+    &-wrapper {
       padding-bottom: 25px;
     }
 
-    &-button{
+    &-button {
       font-size: 25px;
-      color: #BB3638;
-      background-color: #FFFFFF;
+      color: #bb3638;
+      background-color: #ffffff;
       outline: none;
       border: 0;
       padding: 10px 0;
@@ -86,17 +80,50 @@
       width: fit-content;
       letter-spacing: 1px;
     }
-    &-button-wrapper{
+    &-button-wrapper {
       text-align: center;
-      background-color: #FFFFFF;
+      background-color: #ffffff;
       width: 80%;
       margin: auto;
       border-radius: 15px;
       cursor: pointer;
     }
 
-    &-item{
-
+    &-item {
     }
+  }
+}
+
+.main {
+  width: 1260px;
+  height: 100px;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  row-gap: 48px;
+
+  &-wrapper{
+    box-sizing: border-box;
+    width: 100%;
+    margin: auto;
+    padding-top: 39px;
+    height: 739px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+  }
+
+  &-item{
+    width: 239px;
+    height: 317px;
+    border-radius: 20px;
+  }
+
+  &-description{
+    border-radius: 20px;
+    z-index: 9999;
+    position: absolute;
+    width: 239px;
+    height: 317px;
+    background-color: #313638;
+    opacity: 80%;
   }
 }
