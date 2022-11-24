@@ -9,14 +9,12 @@ const Bookmark = ({ title, href }: { title: string; href: string }) => {
     if (pathname === href) {
       setActive("--active");
     }
-  }, [href]);
+  }, [pathname, href]);
 
   return (
-    <Link href={href} className="">
-      <a className={"bookmark " + active}>
-        <div className="bookmark__title">{title}</div>
-      </a>
-    </Link>
+    <a href={href} className={"bookmark " + active}>
+      <div className="bookmark__title">{title}</div>
+    </a>
   );
 };
 

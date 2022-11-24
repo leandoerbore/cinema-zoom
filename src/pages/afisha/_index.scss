@@ -4,6 +4,7 @@
   display: grid;
   grid-template-areas:
     "upper upper upper"
+    "menu middle main"
     "menu middle main";
   grid-template-columns: 2fr 1fr 6fr;
   overflow-x: hidden;
@@ -36,6 +37,7 @@
   &__filter {
     box-sizing: border-box;
     padding: 20px;
+    text-align: center;
 
     &-select {
       width: 100%;
@@ -79,14 +81,11 @@
       margin: auto;
       width: fit-content;
       letter-spacing: 1px;
-    }
-    &-button-wrapper {
-      text-align: center;
-      background-color: #ffffff;
-      width: 80%;
-      margin: auto;
-      border-radius: 15px;
       cursor: pointer;
+      width: 80%;
+      border-radius: 15px;
+
+
     }
 
     &-item {
@@ -115,15 +114,27 @@
     width: 239px;
     height: 317px;
     border-radius: 20px;
+    position: relative;
+
+    text-decoration: none;
   }
 
   &-description{
-    border-radius: 20px;
+    border-radius: 17px;
     z-index: 9999;
     position: absolute;
     width: 239px;
     height: 317px;
     background-color: #313638;
-    opacity: 80%;
+    opacity: 95%;
+
+    box-sizing: border-box;
+    padding: 4px;
+
+
+    text-decoration: none;
+    font-size: 20px;
+    font-weight: 400;
+    color: #BB0A21;
   }
 }

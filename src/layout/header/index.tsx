@@ -6,16 +6,14 @@ const Header = () => {
   return (
     <>
       <div className="header">
-        <Link href="/">
-          <a>
-            <div className="header__title">Zoom-Zoom</div>
-          </a>
-        </Link>
+        <a href="/">
+          <div className="header__title">Zoom-Zoom</div>
+        </a>
       </div>
 
       <nav className="bookmark-wrapper">
         <Bookmark title="Афиша" href="/afisha" />
-        <Bookmark title="Кинотеатры" href="/cinemas" />
+        <Bookmark title="Кинотеатры" href="/map" />
         <Bookmark title="О нас" href="/about" />
       </nav>
     </>
