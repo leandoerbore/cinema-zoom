@@ -1,12 +1,11 @@
-import { useRouter } from "next/router";
-import { filmsData, filmsMockData } from "../../../mocks/films";
-import { useEffect, useState } from "react";
-import DatePicker from "react-datepicker";
+import { filmsMockData } from "../../../mocks/films";
+import { MutableRefObject, useState } from "react";
+import ReactDatePicker, {
+  registerLocale,
+  setDefaultLocale,
+} from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import ru from "date-fns/locale/ru";
-import { registerLocale, setDefaultLocale } from "react-datepicker";
-import useSWR from "swr";
-import films from "../../api/films";
 
 async function fetcher(key) {
   const res = await fetch(window.location.origin + key.url);
@@ -35,10 +34,54 @@ export interface filmProps {
   date: string;
 }
 
-export default function Film({film} : {film: filmProps}) {
-  const [startDate, setStartDate] = useState(new Date());
+export interface sessionsProps extends Array<sessionsProps> {
+  id: number;
+  filmId: number;
+  booked: number[];
+  date: Date;
+}
+
+const Seat = ({ isBooked }: { isBooked: boolean }) => {
+  const [booked, setBooked] = useState<boolean>(isBooked);
+  const [selected, setSelected] = useState<boolean>(false);
+
+  return (
+    <>
+      <div
+        onClick={() => {
+          if (booked) return;
+          setSelected(!selected);
+        }}
+
+        className={`film__seats-item ${selected ? 'green' : ''} ${booked ? 'red' : ''}`}
+      />
+    </>
+  );
+};
+
+export default function Film({
+  film,
+  sessions,
+}: {
+  film: filmProps;
+  sessions: sessionsProps;
+}) {
+  const includeDates = sessions.map((session) => {
+    return new Date(new Date(session.date).getTime() - 3600 * 1000 * 3);
+  });
+  const [startDate, setStartDate] = useState(includeDates[0]);
   registerLocale("ru", ru);
   setDefaultLocale("ru");
+
+  const filteredPassedTime = (time) => {
+    const filteredTime = includeDates.filter((date) => {
+      let currentDate = new Date(date);
+      return currentDate.toLocaleTimeString() === time.toLocaleTimeString();
+    });
+
+    return filteredTime.length > 0;
+  };
+
 
   return (
     <>
@@ -59,12 +102,60 @@ export default function Film({film} : {film: filmProps}) {
           <div className="film__booking">
             <div className="film__booking-field">
               <span>Забронировать на </span>
-              <DatePicker
+              <ReactDatePicker
                 selected={startDate}
-                onChange={(date: Date) => setStartDate(date)}
+                onChange={(date) => setStartDate(date)}
+                includeDates={includeDates}
+                showTimeSelect
+                filterTime={filteredPassedTime}
+                dateFormat="MMMM d, yyyy h:mm "
                 className="film__booking-dataPicker"
               />
             </div>
+          </div>
+
+          <div className="film__seats">
+            {sessions.map((session) => {
+              let render: JSX.Element[];
+              if (
+                new Date(
+                  new Date(session.date).getTime() - 3600 * 1000 * 3
+                ).toLocaleTimeString() === startDate.toLocaleTimeString()
+              ) {
+                console.log('yep')
+                const [booked, setBooked] = useState(new Array<boolean>(40).fill(false));
+                session.booked.map((day) => {
+                  booked[day] = true;
+                });
+                let row = 6;
+                render = booked.map((isBooked, index) => {
+                  let r = false;
+                  if (
+                    index === 4 ||
+                    index === 12 ||
+                    index === 20 ||
+                    index === 28 ||
+                    index === 36
+                  ) {
+                    r = true;
+                    row--;
+                  }
+
+                  return (
+                    <>
+                      {r && (
+                        <div key={index + 1000} className="film__seats-row">
+                          <span className="film__seats-row-text">{row}</span>
+                        </div>
+                      )}
+                      <Seat isBooked={isBooked} key={index} />
+                    </>
+                  );
+                });
+              }
+
+              return render;
+            })}
           </div>
         </div>
       )}
@@ -91,11 +182,19 @@ export async function getStaticPaths() {
 export async function getStaticProps(context) {
   const id = context.params.film;
 
-  const res = await fetch(`http://localhost:3000/api/films/${id}`);
+  const resFilm = await fetch(`http://localhost:3000/api/films/${id}`);
+  if (!resFilm.ok) {
+    throw new Error("fetch film");
+  }
+  const film: filmProps = await resFilm.json();
 
-  const film = await res.json()
+  const resSessions = await fetch(`http://localhost:3000/api/sessions/${id}`);
+  if (!resSessions.ok) {
+    throw new Error("fetch session");
+  }
+  const sessions: sessionsProps = await resSessions.json();
 
   return {
-    props: {film}
-  }
+    props: { film, sessions },
+  };
 }

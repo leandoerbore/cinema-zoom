@@ -1,52 +1,86 @@
 .film {
-  background-color: #FFFFFF;
+  background-color: #ffffff;
   box-sizing: border-box;
   padding: 0 240px;
 
-  &__main{
+  &__main {
     display: flex;
     gap: 200px;
 
-
-    &-img{
+    &-img {
       width: 290px;
       height: 600px;
       border-radius: 12px;
     }
 
-
-    &-info{
+    &-info {
       padding-top: 72px;
-
 
       font-size: 26px;
       font-weight: 400;
       line-height: 28px;
-
     }
   }
 
-
-  &__booking{
+  &__booking {
     position: relative;
 
-    &-field{
+    &-field {
       font-weight: 700;
       font-size: 40px;
       display: flex;
       white-space: nowrap;
 
-      gap: 20px
+      gap: 20px;
     }
 
-    &-dataPicker{
+    &-dataPicker {
       position: absolute;
       top: 50%;
       margin-top: -38px;
       height: 38px;
+      width: 300px;
+      text-align: center;
 
-      font-size: 38px;
+      font-size: 28px;
+    }
+  }
 
+  &__seats {
+    padding: 30px 300px;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+    gap: 10px;
+
+    &-item {
+      width: 80px;
+      height: 80px;
+      background-color: #313638;
+      border-radius: 12px;
+      cursor: pointer;
+    }
+
+    .red {
+      background-color: #bb0a21;
+    }
+    .green {
+      background-color: #50ba47;
+    }
+
+    &-row {
+      padding: 0 10px;
+      position: relative;
+      width: 60px;
+      height: 80px;
+
+      &-text {
+        position: absolute;
+        bottom: 0;
+        text-align: center;
+        font-size: 40px;
+        width: 80%;
+        border-bottom: #313638 solid;
+      }
     }
   }
 }

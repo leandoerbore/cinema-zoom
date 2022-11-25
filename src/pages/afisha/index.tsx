@@ -59,16 +59,16 @@ const Afisha = (data) => {
     event.preventDefault();
     const { country, age, cinema, date } = event.target;
 
-    let newData = films.filter((film) => {
-      return (
-        film.country.match(country.value) &&
-        film.age > age.value &&
-        film.cinema.match(cinema.value) &&
-        film.date === date.value
-      );
-    });
+    const filteredData = data.films.filter(
+      film =>
+        (country.value === "null" || film.country.match(country.value)) &&
+        (age.value === "null" || film.age >= age.value) &&
+        (cinema.value === "null" || film.cinema.match(cinema.value)) &&
+        (date.value === "null" || film.date === date.value)
+    );
 
-    setFilms(newData);
+
+    setFilms(filteredData);
   };
 
   return (
@@ -92,6 +92,7 @@ const Afisha = (data) => {
                       name="country"
                       id="country"
                     >
+                      <option value="null">Любая</option>
                       <option value="Россия">Россия</option>
                       <option value="США">США</option>
                     </select>
@@ -104,6 +105,8 @@ const Afisha = (data) => {
                       </span>
                     </div>
                     <select className="menu__filter-select" name="age" id="age">
+                      <option value="null">Любой</option>
+                      <option value="13">0+</option>
                       <option value="13">13+</option>
                       <option value="16">16+</option>
                       <option value="18">18+</option>
@@ -120,6 +123,7 @@ const Afisha = (data) => {
                       name="cinema"
                       id="cinema"
                     >
+                      <option value="null">Любой</option>
                       <option value="Невский">Невский</option>
                       <option value="Витебский">Витебский</option>
                       <option value="Балтика">Балтика</option>
@@ -135,6 +139,7 @@ const Afisha = (data) => {
                       name="date"
                       id="date"
                     >
+                      <option value="null"></option>
                       <option value="Сегодня">Сегодня</option>
                       <option value="Завтра">Завтра</option>
                     </select>
@@ -157,17 +162,20 @@ const Afisha = (data) => {
           <div className="main-wrapper">
             <div className="main">
               {films.map(
-                ({
-                  description,
-                  time,
-                  producer,
-                  country,
-                  premier,
-                  img,
-                  title,
-                  minDescription,
-                  id,
-                }, index) => {
+                (
+                  {
+                    description,
+                    time,
+                    producer,
+                    country,
+                    premier,
+                    img,
+                    title,
+                    minDescription,
+                    id,
+                  },
+                  index
+                ) => {
                   return (
                     <FilmItem
                       description={description}
@@ -195,12 +203,12 @@ const Afisha = (data) => {
 export default Afisha;
 
 export async function getStaticProps() {
-  const res = await fetch('http://localhost:3000/api/films')
-  if (!res.ok){
-    throw new Error('fetch')
+  const res = await fetch("http://localhost:3000/api/films");
+  if (!res.ok) {
+    throw new Error("fetch");
   }
-  const films = await res.json()
+  const films = await res.json();
   return {
-    props: {films}
-  }
+    props: { films },
+  };
 }

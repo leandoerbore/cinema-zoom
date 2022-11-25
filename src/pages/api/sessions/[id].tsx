@@ -8,11 +8,11 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   }
 
   try {
-    const { id } = req.body;
+    const { id } = req.query;
     const prisma = new PrismaClient()
 
       const savedSession = await prisma.sessions.findMany({
-          where: {filmId: id}
+          where: {filmId: Number(id)}
       })
 
       res.status(200).json(savedSession)
