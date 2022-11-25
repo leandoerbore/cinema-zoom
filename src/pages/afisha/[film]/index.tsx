@@ -1,23 +1,12 @@
 import { filmsMockData } from "../../../mocks/films";
-import { MutableRefObject, useState } from "react";
+import {MutableRefObject, useEffect, useState} from "react";
 import ReactDatePicker, {
   registerLocale,
   setDefaultLocale,
 } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import ru from "date-fns/locale/ru";
-
-async function fetcher(key) {
-  const res = await fetch(window.location.origin + key.url);
-  if (!res.ok) throw new Error("fetcher");
-  const response: filmsMockData = await res.json();
-
-  const content = response.data.filter((film) => {
-    return film.id === Number(key.id);
-  });
-
-  return content;
-}
+import useSWR from "swr";
 
 export interface filmProps {
   id: number;
@@ -41,9 +30,18 @@ export interface sessionsProps extends Array<sessionsProps> {
   date: Date;
 }
 
-const Seat = ({ isBooked }: { isBooked: boolean }) => {
-  const [booked, setBooked] = useState<boolean>(isBooked);
+async function fetcher(key) {
+  const res = await fetch(`http://localhost:3000/api/sessions/${key}`);
+  if (!res.ok) throw new Error("fetcher");
+
+
+  return await res.json();
+}
+
+const Seat = ({ sessionId, index }: { sessionId: number, index: number }) => {
+  const [booked, setBooked] = useState<boolean>(false);
   const [selected, setSelected] = useState<boolean>(false);
+  const { data } = useSWR(sessionId.toString(), fetcher);
 
   return (
     <>
@@ -52,8 +50,9 @@ const Seat = ({ isBooked }: { isBooked: boolean }) => {
           if (booked) return;
           setSelected(!selected);
         }}
-
-        className={`film__seats-item ${selected ? 'green' : ''} ${booked ? 'red' : ''}`}
+        className={`film__seats-item ${selected ? "green" : ""} ${
+          booked ? "red" : ""
+        }`}
       />
     </>
   );
@@ -67,14 +66,17 @@ export default function Film({
   sessions: sessionsProps;
 }) {
   const includeDates = sessions.map((session) => {
-    return new Date(new Date(session.date).getTime() - 3600 * 1000 * 3);
+    return {
+      id: session.id,
+      date: new Date(new Date(session.date).getTime() - 3600 * 1000 * 3),
+    };
   });
-  const [startDate, setStartDate] = useState(includeDates[0]);
+  const [startDate, setStartDate] = useState(includeDates[0].date);
   registerLocale("ru", ru);
   setDefaultLocale("ru");
 
   const filteredPassedTime = (time) => {
-    const filteredTime = includeDates.filter((date) => {
+    const filteredTime = includeDates.filter(({ date }) => {
       let currentDate = new Date(date);
       return currentDate.toLocaleTimeString() === time.toLocaleTimeString();
     });
@@ -82,10 +84,9 @@ export default function Film({
     return filteredTime.length > 0;
   };
 
-
   return (
     <>
-      <div className="indent"></div>
+      <div className="indent" />
       {film && (
         <div className="film">
           <div className="film__main">
@@ -105,7 +106,7 @@ export default function Film({
               <ReactDatePicker
                 selected={startDate}
                 onChange={(date) => setStartDate(date)}
-                includeDates={includeDates}
+                includeDates={includeDates.map(({ date }) => date)}
                 showTimeSelect
                 filterTime={filteredPassedTime}
                 dateFormat="MMMM d, yyyy h:mm "
@@ -115,20 +116,17 @@ export default function Film({
           </div>
 
           <div className="film__seats">
-            {sessions.map((session) => {
+            {includeDates.map((session) => {
               let render: JSX.Element[];
               if (
                 new Date(
-                  new Date(session.date).getTime() - 3600 * 1000 * 3
+                  new Date(session.date).getTime()
                 ).toLocaleTimeString() === startDate.toLocaleTimeString()
               ) {
-                console.log('yep')
-                const [booked, setBooked] = useState(new Array<boolean>(40).fill(false));
-                session.booked.map((day) => {
-                  booked[day] = true;
-                });
+                const booked = new Array(40);
+                booked.fill(session.id);
                 let row = 6;
-                render = booked.map((isBooked, index) => {
+                render = booked.map((id, index) => {
                   let r = false;
                   if (
                     index === 4 ||
@@ -144,11 +142,11 @@ export default function Film({
                   return (
                     <>
                       {r && (
-                        <div key={index + 1000} className="film__seats-row">
+                        <div className="film__seats-row">
                           <span className="film__seats-row-text">{row}</span>
                         </div>
                       )}
-                      <Seat isBooked={isBooked} key={index} />
+                      <Seat sessionId={id} index={index} key={index} />
                     </>
                   );
                 });
