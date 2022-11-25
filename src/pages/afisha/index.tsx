@@ -52,14 +52,14 @@ const FilmItem = ({
   );
 };
 
-const Afisha = () => {
-  const [mockData, setMockData] = useState(filmsData.data);
+const Afisha = (data) => {
+  const [films, setFilms] = useState(data.films);
 
   const refreshData = (event) => {
     event.preventDefault();
     const { country, age, cinema, date } = event.target;
 
-    let data = filmsData.data.filter((film) => {
+    let newData = films.filter((film) => {
       return (
         film.country.match(country.value) &&
         film.age > age.value &&
@@ -68,7 +68,7 @@ const Afisha = () => {
       );
     });
 
-    setMockData(data);
+    setFilms(newData);
   };
 
   return (
@@ -156,7 +156,7 @@ const Afisha = () => {
         <div className="grid-container__main">
           <div className="main-wrapper">
             <div className="main">
-              {mockData.map(
+              {films.map(
                 ({
                   description,
                   time,
@@ -167,7 +167,7 @@ const Afisha = () => {
                   title,
                   minDescription,
                   id,
-                }) => {
+                }, index) => {
                   return (
                     <FilmItem
                       description={description}
@@ -179,6 +179,7 @@ const Afisha = () => {
                       img={img}
                       minDescription={minDescription}
                       id={id}
+                      key={index}
                     />
                   );
                 }
@@ -192,3 +193,14 @@ const Afisha = () => {
 };
 
 export default Afisha;
+
+export async function getStaticProps() {
+  const res = await fetch('http://localhost:3000/api/films')
+  if (!res.ok){
+    throw new Error('fetch')
+  }
+  const films = await res.json()
+  return {
+    props: {films}
+  }
+}

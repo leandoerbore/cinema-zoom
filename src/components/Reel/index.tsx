@@ -1,6 +1,7 @@
 import { useState } from "react";
 import * as React from "react";
-import { mockDataSoon, mockDataToday, Position } from "../../mocks/reel";
+import { Position } from "../../mocks/reel";
+import { variants } from "../../pages";
 
 interface MainData {
   description: string;
@@ -19,20 +20,21 @@ interface contentProp {
   index: number;
   setActiveForm: React.Dispatch<React.SetStateAction<boolean>>;
   position: Position;
-  data: MainData;
+  film: IFilmData;
 }
 
 interface formProps {
   activeForm: boolean;
   setActiveForm: React.Dispatch<React.SetStateAction<boolean>>;
   position: Position;
-  data: MainData;
+  data: IFilmData;
 }
 
 const SLIDE_WIDTH = 317;
 
 const Form = ({ activeForm, setActiveForm, position, data }: formProps) => {
   const {
+      id,
     img,
     title,
     premier,
@@ -40,7 +42,7 @@ const Form = ({ activeForm, setActiveForm, position, data }: formProps) => {
     description,
     time,
     producer,
-    released,
+    /*released,*/
   } = data;
 
   return (
@@ -53,8 +55,10 @@ const Form = ({ activeForm, setActiveForm, position, data }: formProps) => {
               <p className="film-title">{title}</p>
               <p className="film-description">{description}</p>
               <div className="button-wrap">
-                {!released && <button className="purchase">Купить</button>}
-                <button className="book">Забронировать</button>
+                {position === "positionDown" && (
+                  <button onClick={() => window.location.assign(`/afisha/${id}`)} className="purchase">Купить</button>
+                )}
+                {/*<button className="book">Забронировать</button>*/}
               </div>
             </div>
             <div className="film-prop">
@@ -96,8 +100,7 @@ const Carousel = ({ children }) => {
   const handleRightArrowClick = () => {
     setOffset((currentOffset) => {
       const newOffset = currentOffset - SLIDE_WIDTH;
-      const maxOffSet = -(SLIDE_WIDTH * (children.length - 7));
-      console.log(children.length);
+      const maxOffSet = -(SLIDE_WIDTH * (children.length - 6));
       return Math.max(newOffset, maxOffSet);
     });
   };
@@ -131,61 +134,89 @@ const Carousel = ({ children }) => {
 const Content = ({
   index,
   position,
-  data,
+  film,
   setActiveForm,
   activeForm,
   setFilmData,
 }: contentProp) => {
-  if (index === 0)
-    return (
-      <>
-        {position === "positionDown" && (
-          <div className="reel-content">
-            <img className="reel-img" src="/images/today.png" alt="reel" />
-          </div>
-        )}
-
-        {position === "positionUp" && (
-          <div className="reel-content">
-            <img className="reel-img" src="/images/soon.png" alt="reel" />
-          </div>
-        )}
-      </>
-    );
   return (
     <>
+      {index === 0 && position === "positionDown" && (
+        <div className="reel-content">
+          <img className="reel-img" src="/images/today.png" alt="reel" />
+        </div>
+      )}
+      {index === 0 && position === "positionUp" && (
+        <div className="reel-content">
+          <img className="reel-img" src="/images/soon.png" alt="reel" />
+        </div>
+      )}
       <div
         className="reel-content"
         onClick={() => {
           setActiveForm(!activeForm);
-          setFilmData(data);
+          setFilmData(film);
         }}
       >
-        <img className="reel-img" src={data.img} alt="reel" />
+        <img className="reel-img" src={film.img} alt="reel" />
       </div>
     </>
   );
 };
 
-const Reel = (mockData: { variant: string }) => {
-  const { position, data } =
-    mockData.variant === "today" ? mockDataToday : mockDataSoon;
+export interface IFilmsData extends Array<IFilmsData> {
+  id: number;
+  title: string;
+  img: string;
+  description: string;
+  minDescription: string;
+  producer: string;
+  time: string;
+  premier: string;
+  country: string;
+  age: number;
+  cinema: string;
+  date: string;
+}
+export interface IFilmData {
+  id: number;
+  title: string;
+  img: string;
+  description: string;
+  minDescription: string;
+  producer: string;
+  time: string;
+  premier: string;
+  country: string;
+  age: number;
+  cinema: string;
+  date: string;
+}
+
+const Reel = ({ films, variant }: { films: IFilmsData; variant: string }) => {
+  const reelFilms = films;
+  /*const reelFilms = films.filter((film) => {
+    return film.date === variant
+  });*/
+  const position = variant === variants.today ? "positionDown" : "positionUp";
+
   const [activeForm, setActiveForm] = useState<boolean>(false);
-  const [filmData, setFilmData] = useState(data[0]);
+  const [filmData, setFilmData] = useState(reelFilms[0]);
 
   return (
     <>
       <div className="reel">
         <Carousel
-          children={data.map((data, index) => {
+          children={reelFilms.map((film, index) => {
             return (
               <Content
                 index={index}
-                data={data}
+                film={film}
                 position={position}
                 setActiveForm={setActiveForm}
                 activeForm={activeForm}
                 setFilmData={setFilmData}
+                key={index}
               />
             );
           })}

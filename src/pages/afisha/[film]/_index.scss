@@ -1,0 +1,52 @@
+.film {
+  background-color: #FFFFFF;
+  box-sizing: border-box;
+  padding: 0 240px;
+
+  &__main{
+    display: flex;
+    gap: 200px;
+
+
+    &-img{
+      width: 290px;
+      height: 600px;
+      border-radius: 12px;
+    }
+
+
+    &-info{
+      padding-top: 72px;
+
+
+      font-size: 26px;
+      font-weight: 400;
+      line-height: 28px;
+
+    }
+  }
+
+
+  &__booking{
+    position: relative;
+
+    &-field{
+      font-weight: 700;
+      font-size: 40px;
+      display: flex;
+      white-space: nowrap;
+
+      gap: 20px
+    }
+
+    &-dataPicker{
+      position: absolute;
+      top: 50%;
+      margin-top: -38px;
+      height: 38px;
+
+      font-size: 38px;
+
+    }
+  }
+}

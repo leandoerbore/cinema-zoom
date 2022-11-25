@@ -1,6 +1,5 @@
 import React from "react";
 import { Bookmark } from "./components/bookmark";
-import Link from "next/link";
 
 const Header = () => {
   return (
